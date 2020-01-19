@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Player_Script : MonoBehaviour
 {
-
-    private Mesh mesh;
+    
     private Mesh sphere;
     private Mesh cube;
 
@@ -13,14 +12,20 @@ public class Player_Script : MonoBehaviour
     private int size;
     [SerializeField]
     private float density;
+    [SerializeField]
+    private float interpolationFrames;
 
     Vector3[] vertices;
-    Vector2[] newUV;
+    //Vector2[] newUV;
     Vector3[] normals;
     int[] triangles;
 
     private enum Sides { FRONT, RIGHT, BACK, LEFT, BOTTOM, TOP }
     private Vector3[] possibleNormals;
+    private bool change = false;
+    private bool changing = false;
+    private int direction = -1;
+    private int frameNumber = 0;
 
     void Start()
     {
@@ -28,7 +33,6 @@ public class Player_Script : MonoBehaviour
         triangles = new int[6 * 6 * size * size];
         possibleNormals = new Vector3[] { new Vector3(0, 0, -1), new Vector3(1, 0, 0), new Vector3(0, 0, 1), new Vector3(-1, 0, 0), new Vector3(0, -1, 0), new Vector3(0, 1, 0) };
         normals = new Vector3[(size + 1) * (size + 1) * 6];
-        cube = new Mesh();
         for (int side = 0; side < 6; side += 1)
         {
             for (int y = 0; y <= size; y += 1)
@@ -119,13 +123,15 @@ public class Player_Script : MonoBehaviour
         }
         
         
-        mesh = new Mesh();
+        Mesh mesh = new Mesh();
         mesh.name = "My Cube";
         mesh.vertices = vertices;
-        mesh.uv = newUV;
+        //mesh.uv = newUV;
         mesh.triangles = triangles;
         mesh.normals = normals;
         GetComponent<MeshFilter>().mesh = mesh;
+        GetComponent<MeshCollider>().sharedMesh = mesh;
+        cube = mesh;
 
         
 
@@ -133,6 +139,53 @@ public class Player_Script : MonoBehaviour
 
     void Update()
     {
-        
+        if (Input.GetButtonDown("Change"))
+        {
+            change = true;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (change)
+        {
+            if (direction == -1)
+            {
+                direction = 1;
+
+            }
+            else
+            {
+                direction = -1;
+            }
+            change = false;
+            changing = true;
+        }
+        if (changing)
+        {
+            //interpolate in the direction, 1 to sphere, -1 to cube
+            float radius = size * density / 2;
+            Vector3[] newVertices = new Vector3[(size + 1) * (size + 1) * 6];
+            //triangles can stay the same
+            normals = new Vector3[(size + 1) * (size + 1) * 6];
+            frameNumber += direction;
+            for (int i = 0; i < vertices.Length; i++){
+                float magnitude = vertices[i].magnitude;
+                float ratio = radius / magnitude;
+                float difference = magnitude - radius;
+                float step = difference / (interpolationFrames + 1);
+                newVertices[i] = vertices[i] * (magnitude - step * frameNumber) / magnitude;
+            }
+
+            Mesh mesh = GetComponent<MeshFilter>().mesh;
+            mesh.vertices = newVertices;
+            GetComponent<MeshFilter>().mesh = mesh;
+            GetComponent<MeshCollider>().sharedMesh = mesh;
+
+            if (direction == 1 && frameNumber == interpolationFrames || direction == -1 && frameNumber == 0)
+            {
+                changing = false;
+            }
+        }
     }
 }
