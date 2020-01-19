@@ -37,28 +37,28 @@ public class Player_Script : MonoBehaviour
                 {
                     if (side == 0)
                     {
-                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(x * density, y * density, 0);
+                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(-size * density / 2 + x * density, -size * density / 2 + y * density, -size * density / 2);
                         
                     }
                     if (side == 1)
                     {
-                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(size * density, y * density, x * density);
+                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(-size * density / 2 + size * density, -size * density / 2 + y * density, -size * density / 2 + x * density);
                     }
                     if (side == 2)
                     {
-                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(size * density - x * density, y * density, size * density);
+                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(-size * density / 2 + size * density - x * density, -size * density / 2 + y * density, -size * density / 2 + size * density);
                     }
                     if (side == 3)
                     {
-                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(0, y * density, size * density - x * density);
+                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(-size * density / 2, -size * density / 2 + y * density, -size * density / 2 + size * density - x * density);
                     }
                     if (side == 4)
                     {
-                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(size * density - x * density, 0, y * density);
+                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(-size * density / 2 + size * density - x * density, -size * density / 2, -size * density / 2 + y * density);
                     }
                     if (side == 5)
                     {
-                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(x * density, size * density, y * density);
+                        vertices[x + y * (size + 1) + side * (size + 1) * (size + 1)] = new Vector3(-size * density / 2 + x * density, -size * density / 2 + size * density, -size * density / 2 + y * density);
                     }
                 }
             }
