@@ -8,6 +8,8 @@ public class Camera_Script : MonoBehaviour
     private GameObject player;
     [SerializeField]
     private float turnSpeed = 4.0f;
+    private float currentX;
+    private float currentY;
     private Vector3 offset;
     // Start is called before the first frame update
     void Start()
@@ -18,9 +20,17 @@ public class Camera_Script : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        offset = Quaternion.AngleAxis(Input.GetAxis("Mouse X") * turnSpeed, Vector3.up) * offset;
-        offset = Quaternion.AngleAxis(Input.GetAxis("Mouse Y") * turnSpeed, Vector3.right) * offset;
-        transform.position = player.transform.position + offset;
+        currentX = transform.eulerAngles.y;
+        currentY = transform.eulerAngles.x;
+        currentX += Input.GetAxisRaw("Mouse X");
+        currentY -= Input.GetAxisRaw("Mouse Y");
+        currentY = Mathf.Clamp(currentY, 10, 80);
+        Vector3 dir = new Vector3(0, 0, -offset.magnitude);
+        Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
+
+        Vector3 wantedPosition = player.transform.position + rotation * dir;
+        transform.position = wantedPosition;
+
         transform.LookAt(player.transform.position);
     }
 }
