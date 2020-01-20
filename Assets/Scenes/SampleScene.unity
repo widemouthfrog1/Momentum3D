@@ -383,9 +383,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a57a83e1920ddf14fa51a5ea96a02cdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 25
-  density: 0.04
+  followCamera: {fileID: 963194225}
+  size: 5
+  density: 0.2
   interpolationFrames: 20
+  speed: 3
 --- !u!4 &849870457
 Transform:
   m_ObjectHideFlags: 0
@@ -412,7 +414,7 @@ MeshCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Convex: 1
-  m_CookingOptions: 14
+  m_CookingOptions: 2
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!54 &849870459
 Rigidbody:
@@ -441,6 +443,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -513,3 +516,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 29.218002, y: -17.141, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff606526df5a6642ae0299f978273c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 849870453}
+  turnSpeed: 4

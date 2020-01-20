@@ -9,13 +9,15 @@ public class Player_Script : MonoBehaviour
     private Mesh cube;
 
     [SerializeField]
-    private int size;
+    private GameObject followCamera;
     [SerializeField]
-    private float density;
+    private int size = 5;
     [SerializeField]
-    private float interpolationFrames;
+    private float density = 0.2f;
     [SerializeField]
-    private float speed;
+    private int interpolationFrames = 20;
+    [SerializeField]
+    private float speed = 3;
 
     Vector3[] vertices;
     //Vector2[] newUV;
@@ -34,6 +36,7 @@ public class Player_Script : MonoBehaviour
 
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         vertices = new Vector3[(size + 1) * (size + 1) * 6];
         triangles = new int[6 * 6 * size * size];
         possibleNormals = new Vector3[] { new Vector3(0, 0, -1), new Vector3(1, 0, 0), new Vector3(0, 0, 1), new Vector3(-1, 0, 0), new Vector3(0, -1, 0), new Vector3(0, 1, 0) };
@@ -153,8 +156,9 @@ public class Player_Script : MonoBehaviour
     private void FixedUpdate()
     {
         Rigidbody rigidbody = GetComponent<Rigidbody>();
-        rigidbody.AddTorque(Vector3.forward * speed * hMovement);
-        rigidbody.AddTorque(Vector3.right * speed * vMovement);
+        Vector3 cameraForward = followCamera.transform.forward;
+        rigidbody.AddTorque(new Vector3(cameraForward.x, 0, cameraForward.z) * speed * hMovement);
+        rigidbody.AddTorque(followCamera.transform.right * speed * vMovement);
         if (change)
         {
             if (direction == -1)
@@ -172,7 +176,7 @@ public class Player_Script : MonoBehaviour
         if (changing)
         {
             //interpolate in the direction, 1 to sphere, -1 to cube
-            float radius = size * density / 2;
+            float radius = size * density / 4;
             Vector3[] newVertices = new Vector3[(size + 1) * (size + 1) * 6];
             //triangles can stay the same
             frameNumber += direction;
@@ -189,7 +193,7 @@ public class Player_Script : MonoBehaviour
             {
                 Vector3 targetDirection = vertices[i].normalized;
                 Vector3 cross = Vector3.Cross(normals[i], targetDirection);
-                float step = Vector3.Angle(normals[i], targetDirection) / (interpolationFrames + 1);
+                float step = Vector3.Angle(normals[i], targetDirection) / interpolationFrames;
                 Quaternion q = Quaternion.AngleAxis(step*frameNumber, cross.normalized);
                 newNormals[i] = q*normals[i];
             }
