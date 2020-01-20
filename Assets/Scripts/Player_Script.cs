@@ -132,9 +132,6 @@ public class Player_Script : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
         GetComponent<MeshCollider>().sharedMesh = mesh;
         cube = mesh;
-
-        
-
     }
 
     void Update()
@@ -167,18 +164,28 @@ public class Player_Script : MonoBehaviour
             float radius = size * density / 2;
             Vector3[] newVertices = new Vector3[(size + 1) * (size + 1) * 6];
             //triangles can stay the same
-            normals = new Vector3[(size + 1) * (size + 1) * 6];
             frameNumber += direction;
             for (int i = 0; i < vertices.Length; i++){
                 float magnitude = vertices[i].magnitude;
-                float ratio = radius / magnitude;
                 float difference = magnitude - radius;
                 float step = difference / (interpolationFrames + 1);
                 newVertices[i] = vertices[i] * (magnitude - step * frameNumber) / magnitude;
             }
 
+            Vector3[] newNormals = new Vector3[(size + 1) * (size + 1) * 6];
+
+            for (int i = 0; i < normals.Length; i++)
+            {
+                Vector3 targetDirection = vertices[i].normalized;
+                Vector3 cross = Vector3.Cross(normals[i], targetDirection);
+                float step = Vector3.Angle(normals[i], targetDirection) / (interpolationFrames + 1);
+                Quaternion q = Quaternion.AngleAxis(step*frameNumber, cross.normalized);
+                newNormals[i] = q*normals[i];
+            }
+
             Mesh mesh = GetComponent<MeshFilter>().mesh;
             mesh.vertices = newVertices;
+            mesh.normals = newNormals;
             GetComponent<MeshFilter>().mesh = mesh;
             GetComponent<MeshCollider>().sharedMesh = mesh;
 
