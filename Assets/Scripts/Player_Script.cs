@@ -18,6 +18,8 @@ public class Player_Script : MonoBehaviour
     private int interpolationFrames = 20;
     [SerializeField]
     private float speed = 3;
+    [SerializeField]
+    private float ballSize = 1;
 
     Vector3[] vertices;
     //Vector2[] newUV;
@@ -176,7 +178,7 @@ public class Player_Script : MonoBehaviour
         if (changing)
         {
             //interpolate in the direction, 1 to sphere, -1 to cube
-            float radius = size * density / 4;
+            float radius = size * density * ballSize / 2;
             Vector3[] newVertices = new Vector3[(size + 1) * (size + 1) * 6];
             //triangles can stay the same
             frameNumber += direction;
