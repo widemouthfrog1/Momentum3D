@@ -14,6 +14,8 @@ public class Player_Script : MonoBehaviour
     private float density;
     [SerializeField]
     private float interpolationFrames;
+    [SerializeField]
+    private float speed;
 
     Vector3[] vertices;
     //Vector2[] newUV;
@@ -26,6 +28,9 @@ public class Player_Script : MonoBehaviour
     private bool changing = false;
     private int direction = -1;
     private int frameNumber = 0;
+
+    private float hMovement;
+    private float vMovement;
 
     void Start()
     {
@@ -140,10 +145,16 @@ public class Player_Script : MonoBehaviour
         {
             change = true;
         }
+        hMovement = -Input.GetAxis("Horizontal");
+        vMovement = Input.GetAxis("Vertical");
+ 
     }
 
     private void FixedUpdate()
     {
+        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        rigidbody.AddTorque(Vector3.forward * speed * hMovement);
+        rigidbody.AddTorque(Vector3.right * speed * vMovement);
         if (change)
         {
             if (direction == -1)
