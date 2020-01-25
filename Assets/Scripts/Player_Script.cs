@@ -141,6 +141,9 @@ public class Player_Script : MonoBehaviour
         mesh.normals = normals;
         GetComponent<MeshFilter>().mesh = mesh;
         GetComponent<MeshCollider>().sharedMesh = mesh;
+        SphereCollider sphereCollider = GetComponent<SphereCollider>();
+        sphereCollider.enabled = false;
+        sphereCollider.radius = size * density * ballSize / 2;
         cube = mesh;
     }
 
@@ -161,6 +164,9 @@ public class Player_Script : MonoBehaviour
         Vector3 cameraForward = followCamera.transform.forward;
         rigidbody.AddTorque(new Vector3(cameraForward.x, 0, cameraForward.z) * speed * hMovement);
         rigidbody.AddTorque(followCamera.transform.right * speed * vMovement);
+
+        SphereCollider sphereCollider = GetComponent<SphereCollider>();
+        MeshCollider meshCollider = GetComponent<MeshCollider>();
         if (change)
         {
             if (direction == -1)
@@ -171,6 +177,8 @@ public class Player_Script : MonoBehaviour
             else
             {
                 direction = -1;
+                sphereCollider.enabled = false;
+                meshCollider.enabled = true;
             }
             change = false;
             changing = true;
@@ -206,7 +214,14 @@ public class Player_Script : MonoBehaviour
             GetComponent<MeshFilter>().mesh = mesh;
             GetComponent<MeshCollider>().sharedMesh = mesh;
 
-            if (direction == 1 && frameNumber == interpolationFrames || direction == -1 && frameNumber == 0)
+            if (direction == 1 && frameNumber == interpolationFrames)
+            {
+                changing = false;
+                sphereCollider.enabled = true;
+                meshCollider.enabled = false;
+
+            }
+            if(direction == -1 && frameNumber == 0)
             {
                 changing = false;
             }
